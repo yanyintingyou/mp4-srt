@@ -1,17 +1,17 @@
-# lecture-srt
+# mp4-srt
 
 [English](README.md) | **简体中文**
 
-用 FunASR 给本地 MP4 课程生成外挂 SRT 字幕。脚本抽取音轨，跑 VAD、Paraformer 语音识别和标点恢复，把字幕写在视频旁边。视频流不重新编码，也不烧录硬字幕。
+用 FunASR 给本地 MP4 视频生成外挂 SRT 字幕。只要视频里有人声就能用。脚本抽取音轨，跑 VAD、Paraformer 语音识别和标点恢复，把字幕写在视频旁边。视频流不重新编码，也不烧录硬字幕。
 
 ## 处理流程
 
 1. `ffmpeg` 从 MP4 抽出 16kHz 单声道 PCM WAV。
 2. FunASR 依次运行 `fsmn-vad`、`paraformer-zh`、`ct-punc`。
 3. 生成器把带标点的文稿切成句子，按 VAD 句子时间戳对齐，再把字符映射到时间。
-4. 单条字幕最多 42 个有效字、9 秒；过短的碎片并入相邻字幕。
+4. 单条字幕目标为 42 个有效字、9 秒；过短的碎片并入相邻字幕后，可能略微超出其中一项。
 5. SRT 使用 UTF-8 BOM 和 CRLF 换行。
-6. 课程根目录生成 CSV 索引，记录视频、章节目录、时长、字幕条数和生成时间。
+6. 视频所在目录生成 CSV 索引，记录视频、目录、时长、字幕条数和生成时间。
 
 ## 环境要求
 
@@ -24,8 +24,8 @@
 ## 安装
 
 ```bash
-git clone https://github.com/<your-account>/lecture-srt.git
-cd lecture-srt
+git clone https://github.com/<your-account>/mp4-srt.git
+cd mp4-srt
 python -m venv .venv
 ```
 
@@ -81,10 +81,10 @@ cp config/hotwords.example.txt config/hotwords.txt   # 可选
 单个视频：
 
 ```bash
-python scripts/generate_srt.py --video "path/to/lecture.mp4"
+python scripts/generate_srt.py --video "path/to/video.mp4"
 ```
 
-整个课程目录：
+整个目录：
 
 ```bash
 python scripts/generate_srt.py --course-dir "path/to/course" --limit 0
@@ -97,7 +97,7 @@ python scripts/generate_srt.py --course-dir "path/to/course" --limit 0
 | 参数 | 作用 |
 | --- | --- |
 | `--video PATH` | 处理单个 MP4 |
-| `--course-dir PATH` | 递归扫描课程目录 |
+| `--course-dir PATH` | 递归扫描目录 |
 | `--video-id ID[,ID...]` | 只处理指定 video_id |
 | `--limit N` | 最多处理 N 个待处理视频；`0` 表示全部 |
 | `--overwrite` | 重做已有 SRT |
@@ -108,7 +108,7 @@ python scripts/generate_srt.py --course-dir "path/to/course" --limit 0
 | `--shard-count N` | 并行分片总数 |
 | `--rebuild-index` | 扫描已有 SRT，重建 CSV 索引 |
 
-课程根目录通过向上查找 `章节索引.csv` 确定，也可以用 `--course-root` 显式指定。
+索引根目录通过向上查找 `章节索引.csv` 确定；没有该文件时用视频所在目录。也可以用 `--course-root` 显式指定。
 
 ## 输出
 
@@ -117,8 +117,8 @@ SRT 与 MP4 同目录同名：
 ```text
 course/
 ├─ chapter-01/
-│  ├─ 01_123456_lecture-title.mp4
-│  └─ 01_123456_lecture-title.srt
+│  ├─ 01_123456_video-title.mp4
+│  └─ 01_123456_video-title.srt
 └─ 字幕索引.csv
 ```
 
@@ -151,7 +151,7 @@ python scripts/generate_srt.py --rebuild-index --course-dir "path/to/course"
 
 - 识别结果会有少量错字和同音字。本项目不附带逐词替换表，讲课上下文通常足够推断原意。
 - `punctuation timestamps could not be aligned, falling back to VAD segments` 是 FunASR 的无害提示，时间轴仍由 VAD 段落提供。
-- 字幕内容来自源视频。只处理自己有权使用的内容，不要传播字幕或课程视频。
+- 字幕内容来自源视频。只处理自己有权使用的内容，不要传播字幕或视频。
 - 工具只读本地文件，不处理 DRM、账号权限或下载。
 
 ## 许可证

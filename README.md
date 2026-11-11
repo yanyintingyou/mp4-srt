@@ -1,15 +1,15 @@
-# lecture-srt
+# mp4-srt
 
 English | [简体中文](README.zh-CN.md)
 
-Generate sidecar SRT subtitles for local MP4 lectures with FunASR. The script extracts the audio track, runs voice activity detection, Paraformer ASR, and punctuation restoration, then writes an SRT next to each video. The video stream stays untouched.
+Generate sidecar SRT subtitles for local MP4 videos with FunASR. Any video with speech works. The script extracts the audio track, runs voice activity detection, Paraformer ASR, and punctuation restoration, then writes an SRT next to each video. The video stream stays untouched.
 
 ## How it works
 
 1. `ffmpeg` extracts a 16 kHz mono PCM WAV from the MP4.
 2. FunASR runs `fsmn-vad`, `paraformer-zh`, and `ct-punc` on the whole recording.
 3. The builder splits the punctuated transcript into sentences, aligns each sentence to the VAD sentence timestamps, and maps characters to time.
-4. Cues are capped at 42 effective characters and 9 seconds. Very short cues merge into a neighbour.
+4. Cues target 42 effective characters and 9 seconds. Very short cues merge into a neighbour, which can push a merged cue slightly past either limit.
 5. The SRT is written as UTF-8 with BOM and CRLF line endings.
 6. A course-level CSV index records the video, chapter directory, duration, cue count, and generation time.
 
@@ -24,8 +24,8 @@ Generate sidecar SRT subtitles for local MP4 lectures with FunASR. The script ex
 ## Install
 
 ```bash
-git clone https://github.com/<your-account>/lecture-srt.git
-cd lecture-srt
+git clone https://github.com/<your-account>/mp4-srt.git
+cd mp4-srt
 python -m venv .venv
 ```
 
@@ -81,7 +81,7 @@ Relative `model_dir` values resolve from the repository root. Edit `config/funas
 Single video:
 
 ```bash
-python scripts/generate_srt.py --video "path/to/lecture.mp4"
+python scripts/generate_srt.py --video "path/to/video.mp4"
 ```
 
 A whole course directory:
@@ -117,8 +117,8 @@ The SRT sits next to the MP4 and uses the same base name:
 ```text
 course/
 ├─ chapter-01/
-│  ├─ 01_123456_lecture-title.mp4
-│  └─ 01_123456_lecture-title.srt
+│  ├─ 01_123456_video-title.mp4
+│  └─ 01_123456_video-title.srt
 └─ 字幕索引.csv
 ```
 
@@ -149,9 +149,9 @@ On success, the temporary WAV and raw ASR JSON are deleted. On failure, both are
 
 ## Notes
 
-- ASR output contains occasional wrong words and homophones. This project does not ship a word replacement table. Lecture context usually makes the meaning clear.
+- ASR output contains occasional wrong words and homophones. This project does not ship a word replacement table. The surrounding speech usually makes the meaning clear.
 - `punctuation timestamps could not be aligned, falling back to VAD segments` is a harmless FunASR warning. Timing comes from VAD segments.
-- SRT content comes from the source video. Process only material you have the right to use. Do not redistribute subtitles or lecture content.
+- SRT content comes from the source video. Process only material you have the right to use. Do not redistribute subtitles or video content.
 - The tool reads local files only. It does not handle DRM, account access, or downloads.
 
 ## License
