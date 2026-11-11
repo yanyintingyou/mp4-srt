@@ -1,0 +1,2 @@
+# Install a CUDA-enabled PyTorch build first: https://pytorch.org/get-started/locally/
+funasr==1.4.13

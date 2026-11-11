@@ -1,0 +1,18 @@
+# Runtime artifacts
+work/
+*.mp4
+*.srt
+*.wav
+*.log
+字幕索引.csv
+
+# Local configuration and models
+config/funasr.json
+config/hotwords.txt
+models/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.DS_Store

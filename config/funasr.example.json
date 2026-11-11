@@ -1,0 +1,13 @@
+{
+  "model_dir": "models/funasr",
+  "model": "paraformer-zh",
+  "vad_model": "fsmn-vad",
+  "punc_model": "ct-punc",
+  "device": "cuda:0",
+  "max_single_segment_time": 15000,
+  "batch_size_s": 300,
+  "max_chars": 42,
+  "max_cue_ms": 9000,
+  "ffmpeg": "ffmpeg",
+  "ffprobe": "ffprobe"
+}
