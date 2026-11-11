@@ -115,7 +115,7 @@ python scripts/generate_srt.py --course-dir "path/to/course" --limit 0
 SRT 与 MP4 同目录同名：
 
 ```text
-course/
+videos/
 ├─ chapter-01/
 │  ├─ 01_123456_video-title.mp4
 │  └─ 01_123456_video-title.srt

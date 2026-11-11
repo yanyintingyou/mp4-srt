@@ -11,7 +11,7 @@ Generate sidecar SRT subtitles for local MP4 videos with FunASR. Any video with 
 3. The builder splits the punctuated transcript into sentences, aligns each sentence to the VAD sentence timestamps, and maps characters to time.
 4. Cues target 42 effective characters and 9 seconds. Very short cues merge into a neighbour, which can push a merged cue slightly past either limit.
 5. The SRT is written as UTF-8 with BOM and CRLF line endings.
-6. A course-level CSV index records the video, chapter directory, duration, cue count, and generation time.
+6. A directory-level CSV index records the video, folder, duration, cue count, and generation time.
 
 ## Requirements
 
@@ -84,7 +84,7 @@ Single video:
 python scripts/generate_srt.py --video "path/to/video.mp4"
 ```
 
-A whole course directory:
+A directory of videos:
 
 ```bash
 python scripts/generate_srt.py --course-dir "path/to/course" --limit 0
@@ -97,7 +97,7 @@ Useful options:
 | Option | Meaning |
 | --- | --- |
 | `--video PATH` | Process one MP4 |
-| `--course-dir PATH` | Scan a course directory recursively |
+| `--course-dir PATH` | Scan a directory recursively |
 | `--video-id ID[,ID...]` | Restrict a course run to selected video IDs |
 | `--limit N` | Process at most N pending videos; `0` means all |
 | `--overwrite` | Regenerate existing SRT files |
@@ -108,14 +108,14 @@ Useful options:
 | `--shard-count N` | Total number of parallel shards |
 | `--rebuild-index` | Rebuild the CSV index from existing SRT files |
 
-The course root is detected by walking up from the video until it finds `章节索引.csv`. Use `--course-root` to set it explicitly.
+The index root is detected by walking up from the video until it finds `章节索引.csv`. Use `--course-root` to set it explicitly.
 
 ## Output
 
 The SRT sits next to the MP4 and uses the same base name:
 
 ```text
-course/
+videos/
 ├─ chapter-01/
 │  ├─ 01_123456_video-title.mp4
 │  └─ 01_123456_video-title.srt
