@@ -24,7 +24,7 @@ Generate sidecar SRT subtitles for local MP4 videos with FunASR. Any video with 
 ## Install
 
 ```bash
-git clone https://github.com/<your-account>/mp4-srt.git
+git clone https://github.com/yanyintingyou/mp4-srt.git
 cd mp4-srt
 python -m venv .venv
 ```
