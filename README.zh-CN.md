@@ -2,7 +2,7 @@
 
 [English](README.md) | **简体中文**
 
-用 FunASR 给本地 MP4 视频生成外挂 SRT 字幕。只要视频里有人声就能用。脚本抽取音轨，跑 VAD、Paraformer 语音识别和标点恢复，把字幕写在视频旁边。视频流不重新编码，也不烧录硬字幕。
+用 FunASR 给本地 MP4 视频生成外挂 SRT 字幕。默认模型面向普通话，英文场景见[语言支持](#语言支持)。脚本抽取音轨，跑 VAD、Paraformer 语音识别和标点恢复，把字幕写在视频旁边。视频流不重新编码，也不烧录硬字幕。
 
 ## 处理流程
 
@@ -12,6 +12,12 @@
 4. 单条字幕目标为 42 个有效字、9 秒；过短的碎片并入相邻字幕后，可能略微超出其中一项。
 5. SRT 使用 UTF-8 BOM 和 CRLF 换行。
 6. 视频所在目录生成 CSV 索引，记录视频、目录、时长、字幕条数和生成时间。
+
+## 语言支持
+
+默认模型 `paraformer-zh` 和 `ct-punc` 面向普通话。中文讲课、演讲效果较好；英文识别质量会明显下降。
+
+英文或多语言音频可以改用 [OpenAI Whisper](https://github.com/openai/whisper) 或 [faster-whisper](https://github.com/SYSTRAN/faster-whisper) 做转写，再把带时间戳的片段交给本项目的 SRT 组装逻辑。当前脚本直接调用 FunASR，没有 Whisper 开关。需要替换 `transcribe()` 并适配片段格式，或者用 Whisper 单独转写后只复用 SRT 生成部分。
 
 ## 环境要求
 

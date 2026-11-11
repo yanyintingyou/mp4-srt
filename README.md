@@ -2,7 +2,7 @@
 
 English | [简体中文](README.zh-CN.md)
 
-Generate sidecar SRT subtitles for local MP4 videos with FunASR. Any video with speech works. The script extracts the audio track, runs voice activity detection, Paraformer ASR, and punctuation restoration, then writes an SRT next to each video. The video stream stays untouched.
+Generate sidecar SRT subtitles for local MP4 videos with FunASR. The default models target Mandarin Chinese. See [Language support](#language-support) for English audio. The script extracts the audio track, runs voice activity detection, Paraformer ASR, and punctuation restoration, then writes an SRT next to each video. The video stream stays untouched.
 
 ## How it works
 
@@ -12,6 +12,12 @@ Generate sidecar SRT subtitles for local MP4 videos with FunASR. Any video with 
 4. Cues target 42 effective characters and 9 seconds. Very short cues merge into a neighbour, which can push a merged cue slightly past either limit.
 5. The SRT is written as UTF-8 with BOM and CRLF line endings.
 6. A directory-level CSV index records the video, folder, duration, cue count, and generation time.
+
+## Language support
+
+The default models, `paraformer-zh` and `ct-punc`, target Mandarin Chinese. They work well on Chinese lectures and talks. English recognition quality drops sharply.
+
+For English or multilingual audio, use [OpenAI Whisper](https://github.com/openai/whisper) or [faster-whisper](https://github.com/SYSTRAN/faster-whisper) for transcription, then feed the timestamped segments into this project's SRT assembly. The script calls FunASR directly and has no Whisper switch. You can replace `transcribe()` and adapt the segment format, or run Whisper separately and reuse only the SRT builder.
 
 ## Requirements
 
